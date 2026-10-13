@@ -48,6 +48,14 @@ clean {
     delete 'bin'
 }
 
+
+tasks.withType(JavaCompile) {
+//    options.deprecation = true;
+//    options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation', '-Amapstruct.verbose=false']
+    options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation' ]
+}
+
+
 test {
     testLogging {
         showStandardStreams = true
