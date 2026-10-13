@@ -47,8 +47,8 @@
 /* #app-results .main .static-analysis, */
 /*#app-results .main .static-style,*/
 /*#app-results .main .static-style .checkstyle,*/
-#app-results .main .common-flaws,
-#app-results .main .pmd,
+/* #app-results .main .common-flaws, */
+/* #app-results .main .pmd, */
 #app-results .main .spotbugs,
 /*#app-results .main .dynamic-analysis,*/
 /*#app-results .main .unit-test,*/

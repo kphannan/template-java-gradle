@@ -80,3 +80,12 @@ checkstyle {
     toolVersion = libs.versions.checkstyleVersion.get()
 }
 
+//   --- PMD - common coding flaws
+pmd {
+    toolVersion = libs.versions.pmdVersion.get()
+
+    threads = 8
+
+    // consoleOutput = true   // default it false
+    ignoreFailures = true // do not halt the build
+}

@@ -7,8 +7,9 @@
 
 #   --- Coding practices (static analysis) ---
 #   --- Coding style
-#   --- Checkstyle ---
 checkstyleVersion = '14.3.0'
+#   --- Commmon coding flaws ---
+pmdVersion = '7.28.0'
 
 
 ## ====================================
