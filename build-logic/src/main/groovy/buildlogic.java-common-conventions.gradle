@@ -64,6 +64,16 @@ testing {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+        languageVersion = JavaLanguageVersion.of(26)
     }
 }
+
+
+// ========== Static Analysis ==========
+//   --- Checkstyle
+checkstyle {
+    // ignoreFailures = false
+    // showViolations = false
+    toolVersion = libs.versions.checkstyleVersion.get()
+}
+
