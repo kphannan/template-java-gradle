@@ -110,6 +110,20 @@ pmd {
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the coverage report
 
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    //   "**/*App*.class"  // Do not include the application class in coverage stats
+                    // , "**/*Application.class"          // Do not include the application class in coverage stats
+                    // , "**/*Config.class"       // Ignore Config classes - they are just carriers for annotations -- so far
+                                               // OpenApiConfig, JpaConfig
+                                               // Spring security will probably break this rule....
+                    // , "**/mapper/*Mapper*"     // Ignore MapStruct generated classes
+            ])
+        }))
+    }
+
     reports {
         xml.required = true
     }
