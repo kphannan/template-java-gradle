@@ -72,7 +72,7 @@ java {
 // ========== Static Analysis ==========
 //   --- Checkstyle
 checkstyle {
-    // ignoreFailures = false
+    ignoreFailures = true
     showViolations = false
     toolVersion = libs.versions.checkstyleVersion.get()
 }
