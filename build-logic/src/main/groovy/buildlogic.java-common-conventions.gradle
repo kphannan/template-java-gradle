@@ -84,6 +84,19 @@ checkstyle {
 pmd {
     toolVersion = libs.versions.pmdVersion.get()
 
+    // ruleSetFiles = files("${rootDir}/config/pmd/pmd.xml")
+    ruleSetFiles = files("config/pmd/custom-rules.xml")
+    // ruleSetConfig = resources.text.fromFile("config/pmd/custom-rules.xml")
+    ruleSets = [ "category/java/errorprone.xml",
+                 "category/java/bestpractices.xml",
+                 "category/java/codestyle.xml",
+                 "category/java/design.xml",
+                 "category/java/documentation.xml",
+                 "category/java/multithreading.xml",
+                 "category/java/performance.xml",
+                 "category/java/security.xml",
+    ]
+
     threads = 8
 
     // consoleOutput = true   // default it false
