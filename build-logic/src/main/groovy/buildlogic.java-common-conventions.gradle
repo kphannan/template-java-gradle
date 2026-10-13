@@ -5,7 +5,7 @@
  */
 
 plugins {
-    // --- IDE Integration ---
+    // ===== IDE Integration =====
     id 'idea'
     id 'eclipse'
     id 'visual-studio'
@@ -16,10 +16,13 @@ plugins {
     // ===== Quality Assurance =====
     // --- Static Analysis
 
-    // --- Style
+    //   --- Style
     id 'checkstyle'
 
-    // --- Artifact Publishing
+    //   --- Common Coding flaws
+    id 'pmd'
+
+    // ===== Artifact Publishing =====
     id 'maven-publish'
 }
 
