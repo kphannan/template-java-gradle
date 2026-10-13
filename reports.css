@@ -53,7 +53,7 @@
 /*#app-results .main .dynamic-analysis,*/
 /*#app-results .main .unit-test,*/
 /*#app-results .main .unit-test .junit,*/
-#app-results .main .unit-test .coverage,
+/* #app-results .main .unit-test .coverage, */
 #app-results .main .test-mutation,
 #app-results .main .test-mutation .pitest,
 #app-results .main .documentation,
