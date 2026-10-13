@@ -73,7 +73,7 @@ java {
 //   --- Checkstyle
 checkstyle {
     // ignoreFailures = false
-    // showViolations = false
+    showViolations = false
     toolVersion = libs.versions.checkstyleVersion.get()
 }
 
