@@ -1,5 +1,6 @@
 
 ## ====================================
+## ====================================
 ## ----- Versions -----
 [versions]
 
@@ -19,18 +20,46 @@ pmdVersion = '7.28.0'
 pitPluginVersion = '1.19.0-rc.3'
 pitVersion = '1.22.1'
 
+# ===== Code format =====
 
+#   --- OpenRewrite ---
+openRewriteVersion = '7.44.0'
+
+
+
+## ====================================
 ## ====================================
 ## ----- Libraries -----
 [libraries]
 
+
+
+## ====================================
 ## ====================================
 ## ----- Bundles -----
 [bundles]
 
+
+
+## ====================================
 ## ====================================
 ## ----- Plugins -----
 [plugins]
 
+# ----- Static Analysis -----
+
+# --- Code Style ---
+checkstyle = { id = 'checkstyle' }
+# --- Common Defects ---
+pmd = { id = 'pmd' }
+
+# ----- Runtime Analysis -----
+# --- Code Coverage ---
+jacoco = { id = 'jacoco' }
+
+
 #   --- Mutation testing ---
 pitest = { id = 'info.solidsoft.pitest', version.ref = 'pitPluginVersion' }
+
+# --- OpenRewrite ---
+openRewrite = { id = 'org.openrewrite.rewrite', version.ref = 'openRewriteVersion' }

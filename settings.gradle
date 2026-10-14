@@ -7,14 +7,32 @@
  */
 
 pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.namespace == "org.openrewrite") {
+                useModule("org.openrewrite:plugin:${requested.version}")
+                useModule("org.openrewrite:plugin:${requested.version}")
+            }
+        }
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            url = uri("https://artifacts.codegenomeproject.org/maven")
+            credentials {
+                username = providers.gradleProperty("codeGenomeUsername").get()
+                password = providers.gradleProperty("codeGenomeToken").get()
+            }
+        }
         gradlePluginPortal()
     }
     // Include 'plugins build' to define convention plugins.
     includeBuild('build-logic')
 }
+
+
 
 plugins {
     // Apply the foojay-resolver plugin to allow automatic download of JDKs
@@ -33,6 +51,13 @@ dependencyResolutionManagement {
         //     name = "reposiliteRepository"
         //     url = "http://127.0.0.1:8081/"
         // }
+        maven {
+            url = uri("https://artifacts.codegenomeproject.org/maven")
+            credentials {
+                username = providers.gradleProperty("codeGenomeUsername").get()
+                password = providers.gradleProperty("codeGenomeToken").get()
+            }
+        }
         gradlePluginPortal()
     }
 }
