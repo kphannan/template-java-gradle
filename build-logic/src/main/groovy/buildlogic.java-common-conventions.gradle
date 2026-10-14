@@ -12,6 +12,9 @@ plugins {
     id 'java'
 
     // --- Code formatting ---
+    // alias( libs.plugins.spotless ).apply( false )
+    id 'com.diffplug.spotless' //, version.ref = 'spotlessVersion'
+    // id 'com.diffplug.gradle.spotless'
     id 'org.openrewrite.rewrite'
 
 
@@ -226,7 +229,7 @@ rewrite {
     checkstyleConfigFile = project.file("../config/checkstyle/checkstyle.xml")
     configFile = project.file("../config/rewrite.yml")
 
-//    activeStyle( "org.openrewrite.java.style.IntelliJ" )
+    // activeStyle( "org.openrewrite.java.style.IntelliJ" )
 
     activeStyle( 'com.example.java.MyCustomStyle' )
 
@@ -238,30 +241,61 @@ rewrite {
     //org.openrewrite.recipe:rewrite-static-analysis
     activeRecipe(
             'org.openrewrite.FindParseFailures',
-//            'com.yourorg.AddLicenseHeaderExample',
+        //    'com.yourorg.AddLicenseHeaderExample',
            'org.openrewrite.java.format.AutoFormat',
 
-//            'com.example.java.format.Style',
-//            'com.example.UpgradeDependencies',
+        //    'com.example.java.format.Style',
+        //    'com.example.UpgradeDependencies',
             // 'com.example.java.jspecify.JSpecifyBestPractices',
 
-//            'org.apache.druid.RewriteRules',
-//            'org.apache.druid.JUnit4to5Migration'
-//            'com.yourorg.CustomImportLayout'
-//            'com.yourorg.UseTabsOrSpacesExample'
-//            'org.openrewrite.java.cleanup.Cleanup',
-//            'org.openrewrite.java.format.Spaces'
+        //    'org.apache.druid.RewriteRules',
+        //    'org.apache.druid.JUnit4to5Migration'
+        //    'com.yourorg.CustomImportLayout'
+        //    'com.yourorg.UseTabsOrSpacesExample'
+        //    'org.openrewrite.java.cleanup.Cleanup',
+        //    'org.openrewrite.java.format.Spaces'
     )
 
     exclusion(
             "**/SecurityConfig.java",
             "**/ConstraintValidationUtility.java",
-//            "api/src/test/java/com/example/rest/validation/ConstraintValidationUtility.*",
+        //    "api/src/test/java/com/example/rest/validation/ConstraintValidationUtility.*",
     )
 
     exportDatatables = true
     enableExperimentalGradleBuildScriptParsing = false
     logCompilationWarningsAndErrors = true
     throwOnParseFailures = true
+}
+
+
+// --- Spotless
+spotless {
+
+    enforceCheck = false
+
+    java {
+        ratchetFrom( "origin/master" )
+        toggleOffOn()
+
+        // palantirJavaFormat()
+        // googleJavaFormat()
+
+        // licenseHeader( '/* (C) $YEAR */' )
+        // https://choosealicense.com/licenses/agpl-3.0/
+        licenseHeaderFile( "${rootDir}/config/spotless/licenseSlashStarStyle.txt" )
+
+        trimTrailingWhitespace()
+
+        // fix formatting of type annotations
+        formatAnnotations()
+
+        endWithNewline()
+
+        target fileTree( '.' ) {
+            include '**/*.java'
+            exclude '**/build/**'
+        }
+    }
 }
 
