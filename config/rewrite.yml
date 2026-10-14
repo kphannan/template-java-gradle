@@ -18,9 +18,13 @@ styleConfigs:
         - '<blank line>'
         - '<blank line>'
         - 'import java.*'
+        - '<blank line>'
         - 'import javax.*'
         - '<blank line>'
         - 'import all other imports'
+        - '<blank line>'
+        - import ${projectRootPackage}.*
+
       packagesToFold:
         - 'import java.awt.*'
         # - 'import static org.junit.jupiter.api.Assertions.*'
@@ -98,7 +102,7 @@ type: specs.openrewrite.org/v1beta/recipe
 name: com.example.java.format.Style
 displayName: Standardize code style
 description: >-
-  Standardized cod format
+  Standardized code format
 tags:
   - java
 preconditions:
