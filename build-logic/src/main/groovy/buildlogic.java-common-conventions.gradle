@@ -278,12 +278,11 @@ spotless {
         // ratchetFrom( "origin/master" )
         toggleOffOn()
 
-        // palantirJavaFormat()
-        // googleJavaFormat()
-
-        // licenseHeader( '/* (C) $YEAR */' )
         // https://choosealicense.com/licenses/agpl-3.0/
         licenseHeaderFile( "${rootDir}/config/spotless/licenseSlashStarStyle.txt" )
+
+        eclipse().configFile("${rootDir}/config/spotless/eclipseformat.xml") // Use the Eclipse formatter with a config file
+        importOrderFile( "${rootDir}/config/spotless/my.importorder" )
 
         trimTrailingWhitespace()
 

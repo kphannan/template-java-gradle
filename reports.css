@@ -783,7 +783,6 @@ select {
 
 
 .static-analysis {
-    /*border: solid 3px green;*/
     border-radius: .6rem;
     border-left: .1rem solid hsl( var( --clr-white) / .6 );
     border-top: .1rem solid hsl( var( --clr-white) / .6 );
@@ -792,7 +791,6 @@ select {
     color: hsl( var( --clr-white) / .5 );
     font-size: var(--fs-300);
     font-weight: normal;
-    color: hsl( var( --clr-white) / .5 );
 }
 
 .static-analysis a {
@@ -812,21 +810,17 @@ select {
 
 .pmd {
     font-size: var(--fs-200);
-    /*border: solid 3px cyan;*/
 }
 
 .spotbugs {
     font-size: var(--fs-200);
-    /*border: solid 3px lightblue;*/
 }
 
 .checkstyle {
-    /*border: solid 3px steelblue;*/
     font-size: var(--fs-200);
 }
 
 .dynamic-analysis {
-    /*border: solid 3px darkgreen;*/
     border-radius: .6rem;
     border-left: .1rem solid hsl( var( --clr-white) / .6 );
     border-top: .1rem solid hsl( var( --clr-white) / .6 );
@@ -835,7 +829,6 @@ select {
     color: hsl( var( --clr-white) / .5 );
     font-size: var(--fs-300);
     font-weight: normal;
-    color: hsl( var( --clr-white) / .5 );
 }
 
 .dynamic-analysis a {
@@ -846,7 +839,6 @@ select {
 
 
 .documentation {
-    /*border: solid 3px darkgreen;*/
     border-radius: .6rem;
     border-left: .1rem solid hsl( var( --clr-white) / .6 );
     border-top: .1rem solid hsl( var( --clr-white) / .6 );
@@ -855,7 +847,6 @@ select {
     color: hsl( var( --clr-white) / .5 );
     font-size: var(--fs-300);
     font-weight: normal;
-    color: hsl( var( --clr-white) / .5 );
 }
 
 .documentation a {
@@ -865,7 +856,6 @@ select {
 }
 
 .database {
-    /*border: solid 3px darkgreen;*/
     border-radius: .6rem;
     border-left: .1rem solid hsl( var( --clr-white) / .6 );
     border-top: .1rem solid hsl( var( --clr-white) / .6 );
@@ -874,7 +864,6 @@ select {
     color: hsl( var( --clr-white) / .5 );
     font-size: var(--fs-300);
     font-weight: normal;
-    color: hsl( var( --clr-white) / .5 );
 }
 
 .database a {
