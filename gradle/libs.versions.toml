@@ -3,13 +3,21 @@
 ## ----- Versions -----
 [versions]
 
-# ----- Static Analysis -----
+# ===== Static Analysis =====
 
 #   --- Coding practices (static analysis) ---
+
 #   --- Coding style
 checkstyleVersion = '14.3.0'
+
 #   --- Commmon coding flaws ---
 pmdVersion = '7.28.0'
+
+# ===== Dynamic Analysis =====
+
+#   --- Mutation Testing (pitest) ---
+pitPluginVersion = '1.19.0-rc.3'
+pitVersion = '1.22.1'
 
 
 ## ====================================
@@ -24,3 +32,5 @@ pmdVersion = '7.28.0'
 ## ----- Plugins -----
 [plugins]
 
+#   --- Mutation testing ---
+pitest = { id = 'info.solidsoft.pitest', version.ref = 'pitPluginVersion' }
