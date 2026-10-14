@@ -275,7 +275,7 @@ spotless {
     enforceCheck = false
 
     java {
-        ratchetFrom( "origin/master" )
+        // ratchetFrom( "origin/master" )
         toggleOffOn()
 
         // palantirJavaFormat()
