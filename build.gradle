@@ -3,10 +3,16 @@
 
 plugins {
 
+    // ===== Frameworks =====
+    //   --- boilerplate
+    alias( libs.plugins.lombok ).apply( false )
+
+    // ===== Static Analysis =====
     alias( libs.plugins.checkstyle )
     alias( libs.plugins.pmd )
     alias( libs.plugins.jacoco )
 
+    // ===== Formatting / Refactoriing =====
     alias( libs.plugins.openRewrite ).apply( false )
     alias( libs.plugins.spotless ).apply( false )
 

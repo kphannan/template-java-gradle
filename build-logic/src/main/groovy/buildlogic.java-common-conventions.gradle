@@ -42,12 +42,20 @@ dependencies {
         implementation 'org.apache.commons:commons-text:1.14.0'
     }
 
+    // ----- Annotation Processors -----
+    implementation libs.jspecify
+
+    // ----- Refactoring -----
+    //   --- OpenRewrite
     rewrite(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
 
     rewrite("org.openrewrite:rewrite-java:8.93.0")
     // rewrite( "org.openrewrite.recipe:rewrite-migrate-java:3.39.0" )
     // rewrite( "org.openrewrite.recipe:rewrite-spring:6.34.0" )
     // rewrite("org.openrewrite.recipe:rewrite-static-analysis:latest.release")
+
+    testImplementation libs.bundles.unit.test
+	testImplementation libs.logcaptor
 }
 
 

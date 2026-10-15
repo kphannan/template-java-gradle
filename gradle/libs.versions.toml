@@ -4,6 +4,14 @@
 ## ----- Versions -----
 [versions]
 
+# ===== Annotation Processors =====
+
+#   --- JSepcify - tool neutral null checks
+jspecifyVersion = '1.0.0'
+
+#   --- boilerplate methods
+lombokVersion = '9.2.0'
+
 # ===== Static Analysis =====
 
 #   --- Coding practices (static analysis) ---
@@ -15,6 +23,12 @@ checkstyleVersion = '14.3.0'
 pmdVersion = '7.28.0'
 
 # ===== Dynamic Analysis =====
+
+#   --- Unit Testing ---
+# --- Unit Testing ---
+assertjVersion = '4.0.0-M1'
+logcaptorVersion = '2.10.2'
+
 
 #   --- Mutation Testing (pitest) ---
 pitPluginVersion = '1.19.0-rc.3'
@@ -34,6 +48,14 @@ openRewriteVersion = '7.44.0'
 ## ----- Libraries -----
 [libraries]
 
+# ----- Annotation Processor -----
+#   --- JSpecify (Stanard Annotations) ---
+jspecify = { module = 'org.jspecify:jspecify', version.ref = 'jspecifyVersion' }
+
+# --- Unit Testing ---
+assertj = { module = 'org.assertj:assertj-core', version.ref = 'assertjVersion' }
+logcaptor = { group = 'io.github.hakky54', name = 'logcaptor', version.ref = 'logcaptorVersion' }
+
 
 
 ## ====================================
@@ -41,12 +63,18 @@ openRewriteVersion = '7.44.0'
 ## ----- Bundles -----
 [bundles]
 
+unit-test = [ 'assertj', 'logcaptor' ]
 
 
 ## ====================================
 ## ====================================
 ## ----- Plugins -----
 [plugins]
+
+# ----- Coding support -----
+#   --- boilerplate generation ---
+lombok = { id = 'io.freefair.lombok', version.ref = 'lombokVersion' }
+
 
 # ----- Static Analysis -----
 
