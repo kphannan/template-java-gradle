@@ -70,12 +70,7 @@ dependencies {
 
 clean {
     // println "${rootDir}/build"
-    delete '{.,app,lib,list,utilities,build-logic}/build'
-    // delete 'build'
-    // delete 'lib/bin'
-    // delete 'lib/logs'
-    // delete 'bin'
-    // delete 'build-logic/build'
+    delete '{.,app,lib,list,utilities,build-logic}/{build,bin,logs}'
 }
 
 
