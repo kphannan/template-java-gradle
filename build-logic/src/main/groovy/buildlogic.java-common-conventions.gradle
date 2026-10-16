@@ -26,6 +26,7 @@ plugins {
 
     //   --- Common Coding flaws
     id 'pmd'
+    id 'com.github.spotbugs'
 
     //   --- Coverage
     id 'jacoco'
@@ -56,15 +57,25 @@ dependencies {
 
     testImplementation libs.bundles.unit.test
 	testImplementation libs.logcaptor
+
+    // TODO create bundle for the additional rules
+    // implementation libs.spotbugs
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.4.4'
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+    // spotbugsPlugins 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.7.4'
+
 }
 
 
 clean {
     // println "${rootDir}/build"
-    delete 'build'
-    delete 'lib/bin'
-    delete 'lib/logs'
-    delete 'bin'
+    delete '{.,app,lib,list,utilities,build-logic}/build'
+    // delete 'build'
+    // delete 'lib/bin'
+    // delete 'lib/logs'
+    // delete 'bin'
+    // delete 'build-logic/build'
 }
 
 
@@ -136,6 +147,51 @@ pmd {
     // consoleOutput = true   // default it false
     ignoreFailures = true // do not halt the build
 }
+
+//   --- Spotbugs
+spotbugs {
+    // 1. Effort: 'max' uses more analysis time to find more bugs
+    effort = 'max'
+
+    // 2. Report Level: 'low' means "report even low-confidence bugs"
+    // This is the key to "in-depth" reviews.
+    reportLevel = 'low'
+
+    showProgress = true
+    showStackTraces = true
+    ignoreFailures = true
+
+    // excludeFilter = file("${rootProject.projectDir}/config/spotbugs/spotbugs-exclude.xml")
+    excludeFilter = file("${rootDir}/config/spotbugs/spotbugs-exclude.xml")
+    // ruleSetFiles = files("${rootDir}/config/pmd/pmd.xml")
+    // ruleSetFiles = files("config/pmd/custom-rules.xml")
+
+    reportsDir = project.layout.buildDirectory.dir("reports/spotbugs").get().asFile
+
+    projectName = "rail-base/${project.name}"
+    release = "dev-snapshot"
+
+    // visitors = [ 'FindSqlInjection', 'SwitchFallthrough', 'FindNonShortCircuit', "TestASM" ]
+}
+
+[spotbugsMain, spotbugsTest].each { task ->
+    task.configure {
+        reports {
+            html {
+                enabled = true
+                // stylesheet = 'default.xsl'
+                // stylesheet = 'plain.xsl'
+                // stylesheet = 'fancy.xsl'
+                stylesheet = 'fancy-hist.xsl'
+                // stylesheet = 'summary.xsl'
+            }
+            xml {
+                enabled = true
+            }
+        }
+    }
+}
+
 
 
 

@@ -35,12 +35,26 @@
 #api-qa-results .test-bdd, */
 /* #api-qa-results .test-performance, */
 
+/*
+    Main
+    Static Analysis                         Dynamic Analysis
+    Style               CommonFlaws         Unit Tests
+    Checkstyle          PMD   SpotBugs      JUnit   Coverage
+
+    #app-results
+    --------------------------------------------------------------------------------------------------------------------------------
+    .static-analysis                        .dynamic-analysis               .documentation
+    --------------------------------------  ------------------------------  --------------------------------------------------------
+    .static-style       .common-flows       .unit-test          .mutation   .diagrams               .javadoc    .database
+    -----------------   ------------------  ------------------  ----------  ---------------------   --------    ---------
+    .checkstyle         .pmd    .spotbugs   .junit  .coverage   .pitest     .architecture   .uml
+*/
 
 
 /*----- App ----- */
 /*#app-results,*/
 /*#app-results .main,*/
-#app-results .qa,
+/* #app-results .qa, */
 #app-results .test-functional,
 #app-results .test-bdd,
 #app-results .test-performance,
@@ -49,7 +63,7 @@
 /*#app-results .main .static-style .checkstyle,*/
 /* #app-results .main .common-flaws, */
 /* #app-results .main .pmd, */
-#app-results .main .spotbugs,
+/* #app-results .main .spotbugs, */
 /*#app-results .main .dynamic-analysis,*/
 /*#app-results .main .unit-test,*/
 /*#app-results .main .unit-test .junit,*/
@@ -70,9 +84,9 @@
 /*#app-results .main .database .console .h2-console,*/
 #app-results .main .database .console .postgresql,
 
-/*#app-results .qa .static-analysis,*/
-/*#app-results .qa .static-style,*/
-/*#app-results .qa .static-style .checkstyle,*/
+/* #app-results .qa .static-analysis, */
+/* #app-results .qa .static-style, */
+/* #app-results .qa .static-style .checkstyle, */
 /*#app-results .qa .common-flaws,*/
 /*#app-results .qa .pmd,*/
 /*#app-results .qa .spotbugs,*/
