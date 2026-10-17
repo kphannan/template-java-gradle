@@ -561,3 +561,78 @@ jar {
 
 
 
+
+
+// ========== Packaging and Publishing ==========
+tasks.named("versionDisplay") {
+    notCompatibleWithConfigurationCache("Accesses project at execution time")
+}
+versioning {
+    precision = 3
+    defaultNumber = 1
+
+    releaseBuild = false
+    releaseMode  = 'snapshot'
+    displayMode  = 'snapshot'
+    dirty        = { t -> t }
+}
+
+jar {
+    // dependsOn generateGitProperties
+
+    manifest {
+
+        // def ext = project.ext
+        // doLast {
+        //     println "git.branch=" + ext.gitProps['git.branch']
+        // }
+        attributes(
+            'Manifest-Version'       : '0.1.0',
+            'Created-By'             : "Gradle ${gradle.gradleVersion}",
+            'group'                  : "${project.GROUP}",
+            'artifactId'             : "${project.POM_ARTIFACT_ID}",
+            'Build-Timestamp'        : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+            'Built-By'               : System.properties['user.name'],
+            'Build-Jdk'              : "Version: ${System.properties['java.version']} (Vendor: ${System.properties['java.vendor']} Version: ${System.properties['java.vm.version']})",
+            'Build-OS'               : "OS: ${System.properties['os.name']} Arch: ${System.properties['os.arch']} Version: ${System.properties['os.version']}",
+
+            // Versioning
+            'Implementation-Title'   : project.name,
+            'Implementation-Version' : versioning.info.commit,
+            // 'Implementation-Vendor' : ,
+            // 'Specification-Title' : ,
+            // 'Specification-Version' : ,
+            // Source control / versioning
+            // doLast {
+            // 'Git-Commit' : project.ext.gitProps[ 'git.commit.id.abbrev' ],
+            // 'Git-Commit': "${-> project.ext.gitProps['git.commit.id.abbrev']}",
+            // 'Git-Commit': "${-> ext.gitProps['git.commit.id.abbrev']}",
+            'SCM'                    : versioning.info.scm,
+            'Git-Branch'             : versioning.info.branch,
+            'Git-Branch-type'        : versioning.info.branchType,
+            'Git-Branch-id'          : versioning.info.branchId,
+            'Git-Commit'             : versioning.info.commit,
+            'Git-build'              : versioning.info.build,
+            'Git-full'               : versioning.info.full,
+            'Git-base'               : versioning.info.base,
+            'Git-Version-display'    : versioning.info.display,
+            'Git-dirty'              : versioning.info.dirty,
+            // 'Git-gradle' : versioning.info.gradle,
+            // 'Git-tag' : findProperty( versioning.info.tag ) ?: 'undefined',
+            // 'Git-lastTag' : versioning.info.lastTag,
+            // 'Git-build' : versioning.info.build,
+            // 'Git-Version-major'     : versioning.info.versionNumber.major,
+            // 'Git-Version-minor'     : versioning.info.versionNumber.minor,
+            // 'Git-Version-patch'     : versioning.info.versionNumber.patch,
+            // 'Git-Version-qualifier' : versioning.info.versionNumber.qualifier,
+            // 'Git-Version-code'      : versioning.info.versionNumber.versionCode,
+            // 'Git-Version-time': versioning.info.versionNumber.time,
+            // 'Git-Tag'    : project.ext.gitProps[ 'git.tags' ],
+            // }
+            'license'                : "${project.POM_LICENSE_NAME}",
+            'license-url'            : "${project.POM_LICENSE_URL}"
+            // 'license2'         : project.POM_LICENSE_NAME,
+        )
+    }
+}
+
