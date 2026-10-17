@@ -82,3 +82,9 @@ mysql-connector-*
 # PMD
 .pmdCache
 
+
+# Ignore Gradle build output directory
+build
+
+# Ignore Kotlin plugin data
+.kotlin

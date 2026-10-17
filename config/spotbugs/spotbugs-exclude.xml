@@ -1,0 +1,10 @@
+<FindBugsFilter>
+    <!-- Ignore specific patterns that are known to be false positives in your project -->
+    <Match>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+    </Match>
+    <!-- Ignore generated code (e.g., Lombok or MapStruct) -->
+    <Match>
+        <Class name="~.*\.generated\..*" />
+    </Match>
+</FindBugsFilter>
