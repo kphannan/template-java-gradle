@@ -1,0 +1,489 @@
+/*
+ * This project uses @Incubating APIs which are subject to change.
+ */
+
+plugins {
+    // ===== IDE Integration =====
+    id 'idea'
+    id 'eclipse'
+    id 'visual-studio'
+
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+
+    // --- Code formatting ---
+    // alias( libs.plugins.spotless ).apply( false )
+    id 'com.diffplug.spotless' //, version.ref = 'spotlessVersion'
+    // id 'com.diffplug.gradle.spotless'
+    id 'org.openrewrite.rewrite'
+
+
+    // ===== Quality Assurance =====
+    // --- Static Analysis
+
+    //   --- Style
+    id 'checkstyle'
+
+    //   --- Common Coding flaws
+    id 'pmd'
+    id 'com.github.spotbugs'
+
+    //   --- Coverage
+    id 'jacoco'
+
+    // ===== Artifact Publishing =====
+    id 'maven-publish'
+}
+
+
+
+dependencies {
+    constraints {
+        // Define dependency versions as constraints
+        implementation 'org.apache.commons:commons-text:1.14.0'
+    }
+
+    // ----- Annotation Processors -----
+    implementation libs.jspecify
+
+    // ----- Refactoring -----
+    //   --- OpenRewrite
+    rewrite(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
+
+    rewrite("org.openrewrite:rewrite-java:8.93.0")
+    // rewrite( "org.openrewrite.recipe:rewrite-migrate-java:3.39.0" )
+    // rewrite( "org.openrewrite.recipe:rewrite-spring:6.34.0" )
+    // rewrite("org.openrewrite.recipe:rewrite-static-analysis:latest.release")
+
+    testImplementation libs.bundles.unit.test
+	testImplementation libs.logcaptor
+
+    // TODO create bundle for the additional rules
+    // implementation libs.spotbugs
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.4.4'
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+    // spotbugsPlugins 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.7.4'
+
+}
+
+
+clean {
+    delete '{.,app,lib,list,utilities,build-logic}/{build,bin,logs}'
+}
+
+
+tasks.withType(JavaCompile) {
+    // options.deprecation = true;
+    // options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation', '-Amapstruct.verbose=false']
+    options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation' ]
+}
+
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+
+testing {
+    suites {
+        // Configure the built-in test suite
+        test {
+            // Use JUnit Jupiter test framework
+            useJUnitJupiter('6.0.1')
+        }
+
+
+        bdd(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "BDD tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        integration(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Integration tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        functional(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Functional tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        performance(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Performance tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
+
+    withJavadocJar()
+}
+
+
+// ========== Static Analysis ==========
+//   --- Checkstyle
+checkstyle {
+    ignoreFailures = true
+    showViolations = false
+    toolVersion = libs.versions.checkstyleVersion.get()
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        sarif.required = true
+    }
+}
+
+//   --- PMD - common coding flaws
+pmd {
+    toolVersion = libs.versions.pmdVersion.get()
+
+    // ruleSetFiles = files("${rootDir}/config/pmd/pmd.xml")
+    ruleSetFiles = files("config/pmd/custom-rules.xml")
+    // ruleSetConfig = resources.text.fromFile("config/pmd/custom-rules.xml")
+    ruleSets = [ "category/java/errorprone.xml",
+                 "category/java/bestpractices.xml",
+                 "category/java/codestyle.xml",
+                 "category/java/design.xml",
+                 "category/java/documentation.xml",
+                 "category/java/multithreading.xml",
+                 "category/java/performance.xml",
+                 "category/java/security.xml",
+    ]
+
+    threads = 8
+
+    // consoleOutput = true   // default it false
+    ignoreFailures = true // do not halt the build
+}
+
+//   --- Spotbugs
+def spotBugsclassLoader = plugins['com.github.spotbugs'].class.classLoader
+def SpotBugsTask = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.SpotBugsTask' )
+def SpotBugsEffort = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.Effort' )
+def SpotBugsConfidence = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.Confidence' )
+spotbugs {
+    // 1. Effort: 'max' uses more analysis time to find more bugs
+    effort = SpotBugsEffort.MAX
+
+    // 2. Report Level: 'low' means "report even low-confidence bugs"
+    // This is the key to "in-depth" reviews.
+    reportLevel = SpotBugsConfidence.LOW
+
+    showProgress = true
+    showStackTraces = true
+    ignoreFailures = true
+
+    // excludeFilter = file("${rootProject.projectDir}/config/spotbugs/spotbugs-exclude.xml")
+    excludeFilter = file("${rootDir}/config/spotbugs/spotbugs-exclude.xml")
+    // ruleSetFiles = files("${rootDir}/config/pmd/pmd.xml")
+    // ruleSetFiles = files("config/pmd/custom-rules.xml")
+
+    reportsDir = project.layout.buildDirectory.dir("reports/spotbugs").get().asFile
+
+    projectName = "rail-base/${project.name}"
+    release = "dev-snapshot"
+
+    // visitors = [ 'FindSqlInjection', 'SwitchFallthrough', 'FindNonShortCircuit', "TestASM" ]
+}
+
+[spotbugsMain, spotbugsTest].each { task ->
+    task.configure {
+        reports {
+            html {
+                enabled = true
+                // stylesheet = 'default.xsl'
+                // stylesheet = 'plain.xsl'
+                // stylesheet = 'fancy.xsl'
+                stylesheet = 'fancy-hist.xsl'
+                // stylesheet = 'summary.xsl'
+            }
+            xml {
+                enabled = true
+            }
+        }
+    }
+}
+
+
+
+
+// --- Code coverage
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the coverage report
+
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    //   "**/*App*.class"  // Do not include the application class in coverage stats
+                    // , "**/*Application.class"          // Do not include the application class in coverage stats
+                    // , "**/*Config.class"       // Ignore Config classes - they are just carriers for annotations -- so far
+                                               // OpenApiConfig, JpaConfig
+                                               // Spring security will probably break this rule....
+                    // , "**/mapper/*Mapper*"     // Ignore MapStruct generated classes
+            ])
+        }))
+    }
+
+    reports {
+        xml.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        // https://docs.gradle.org/current/javadoc/org/gradle/testing/jacoco/tasks/rules/JacocoViolationRule.html
+        rule {
+            limit {
+                minimum = 0.55
+            }
+        }
+
+        // Flag complex methods
+        rule {
+            element = "METHOD"
+            failOnViolation = false
+            excludes = ['*App*','*Config','**.mapper.*']
+            limit {
+                counter = 'COMPLEXITY'
+                value   = 'TOTALCOUNT'
+                maximum = 5
+            }
+        }
+
+        rule {
+            failOnViolation = false
+            excludes = ['*App*','*Config','**.mapper.*']
+            limit {
+                counter = 'INSTRUCTION'
+                value   = 'COVEREDRATIO'
+                minimum = 0.86
+            }
+        }
+
+        rule {
+            failOnViolation = false
+            excludes = ['*App*','*Config','**.mapper.*']
+            limit {
+                counter = 'BRANCH'
+                value   = 'COVEREDRATIO'
+                minimum = 0.87
+            }
+        }
+
+        rule {
+            failOnViolation = false
+            element = 'CLASS'
+            // Ignore:
+            //     the main Application,
+            //     spring 'Config'  classes as they typically only have annotations
+            //     MapStruct generated implementations
+            excludes = ['*App*','*Config','**.mapper.*']
+
+            // Branch coverage
+            limit {
+                // INSTRUCTION, BRANCH, LINE, COMPLEXITY, METHOD, CLASS
+                counter = 'BRANCH'
+                // COVEREDCOUNT, COVEREDRATION, MISSEDCOUNT, TOTALCOUNT
+                value   = 'COVEREDRATIO'
+                minimum = 0.95
+            }
+
+            // Instruction coverage
+            limit {
+                counter = 'INSTRUCTION'
+                value   = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+
+// ---  OpenRewrite
+rewrite {
+    checkstyleConfigFile = project.file("../config/checkstyle/checkstyle.xml")
+    configFile = project.file("../config/rewrite.yml")
+
+    // activeStyle( "org.openrewrite.java.style.IntelliJ" )
+
+    activeStyle( 'com.example.java.MyCustomStyle' )
+
+    // activeRecipe("org.openrewrite.java.format.AutoFormat")
+
+    activeRecipe("org.openrewrite.java.format.WrappingAndBraces")
+    // activeRecipe("org.openrewrite.staticanalysis.CodeCleanup")
+
+    //org.openrewrite.recipe:rewrite-static-analysis
+    activeRecipe(
+            'org.openrewrite.FindParseFailures',
+        //    'com.yourorg.AddLicenseHeaderExample',
+           'org.openrewrite.java.format.AutoFormat',
+
+        //    'com.example.java.format.Style',
+        //    'com.example.UpgradeDependencies',
+            // 'com.example.java.jspecify.JSpecifyBestPractices',
+
+        //    'org.apache.druid.RewriteRules',
+        //    'org.apache.druid.JUnit4to5Migration'
+        //    'com.yourorg.CustomImportLayout'
+        //    'com.yourorg.UseTabsOrSpacesExample'
+        //    'org.openrewrite.java.cleanup.Cleanup',
+        //    'org.openrewrite.java.format.Spaces'
+    )
+
+    exclusion(
+            "**/SecurityConfig.java",
+            "**/ConstraintValidationUtility.java",
+        //    "api/src/test/java/com/example/rest/validation/ConstraintValidationUtility.*",
+    )
+
+    exportDatatables = true
+    enableExperimentalGradleBuildScriptParsing = false
+    logCompilationWarningsAndErrors = true
+    throwOnParseFailures = true
+}
+
+
+// --- Spotless
+// https://github.com/diffplug/spotless/tree/main/plugin-gradle
+spotless {
+    // ignoreFailures = true
+    // enforceCheck = false
+
+    // enforceCheck false
+
+    java {
+        ratchetFrom( "origin/master" )      // This can only be enabled once the repository exists at origin
+        toggleOffOn()
+
+        // https://choosealicense.com/licenses/agpl-3.0/
+        licenseHeaderFile( "${rootDir}/config/spotless/licenseSlashStarStyle.txt" )
+
+        eclipse().configFile("${rootDir}/config/spotless/eclipseformat.xml") // Use the Eclipse formatter with a config file
+        importOrderFile( "${rootDir}/config/spotless/my.importorder" )
+
+        trimTrailingWhitespace()
+
+        // fix formatting of type annotations
+        formatAnnotations()
+
+        endWithNewline()
+
+        // cleanthat()
+        // tableTestFormatter()
+
+        target fileTree( '.' ) {
+            include '**/*.java'
+            exclude '**/build/**'
+            exclude '**/generated/**'
+        }
+    }
+
+    // https://github.com/diffplug/spotless/tree/main/plugin-gradle#json
+    // json {
+    //     target 'src/**/*.json'                // you have to set the target manually
+    //     simple()                              // has its own section below
+    //     prettier().config(['parser': 'json']) // see Prettier section below
+    //     eclipseWtp('json')                    // see Eclipse web tools platform section
+    //     gson()                                // has its own section below
+    //     jackson()                             // has its own section below
+    //     biome()                               // has its own section below
+    //     jsonPatch([])                         // has its own section below
+    // }
+
+    // https://github.com/diffplug/spotless/tree/main/plugin-gradle#yaml
+    // yaml {
+    //     target 'src/**/*.yaml'                // you have to set the target manually
+    //     jackson()                             // has its own section below
+    //         .spaceBeforeSeparator(false)                   // optional: add a whitespace before key separator. False by default
+    //         .feature('INDENT_OUTPUT', true)                // optional: true by default
+    //         .feature('ORDER_MAP_ENTRIES_BY_KEYS', true)    // optional: false by default
+    //     prettier()                            // has its own section below
+    // }
+
+	format 'misc', {
+		target '.gitignore', '*.gradle', '*.md', '.ci/*.sh'
+		indentWithSpaces( 4 )
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
+}
+
+javadoc {
+    excludes = [ "**/*.javaX", "**/generated/**" ]
+    // failOnError = false
+    destinationDir = file("${buildDir}/docs/main/javadoc")
+}
+
+task testJavadoc(type: Javadoc) {
+    failOnError = false
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/test/javadoc")
+}
+
+task bddJavadoc(type: Javadoc) {
+    source = sourceSets.bdd.allJava
+    classpath = sourceSets.bdd.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/bdd/javadoc")
+}
+
+task functionalJavadoc(type: Javadoc) {
+    source = sourceSets.functional.allJava
+    classpath = sourceSets.functional.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/functional/javadoc")
+}
+
+task integrationJavadoc(type: Javadoc) {
+    source = sourceSets.integration.allJava
+    classpath = sourceSets.integration.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/integration/javadoc")
+}
+
+task performanceJavadoc(type: Javadoc) {
+    source = sourceSets.performance.allJava
+    classpath = sourceSets.performance.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/performance/javadoc")
+}
+
