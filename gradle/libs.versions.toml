@@ -43,6 +43,8 @@ spotlessVersion     = '7.0.0.BETA4'
 #   --- OpenRewrite ---
 openRewriteVersion  = '7.44.0'
 
+# ===== SCM =====
+nemerosaVersion = '4.0.1'
 
 
 ## ====================================
@@ -101,3 +103,6 @@ spotless = { id = 'com.diffplug.spotless', version.ref = 'spotlessVersion' }
 
 # --- OpenRewrite ---
 openRewrite = { id = 'org.openrewrite.rewrite', version.ref = 'openRewriteVersion' }
+
+# ----- SCM -----
+gradleGit = { id = 'net.nemerosa.versioning', version = 'nemerosaVersion' }

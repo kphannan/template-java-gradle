@@ -33,6 +33,9 @@ plugins {
 
     // ===== Artifact Publishing =====
     id 'maven-publish'
+
+    // id 'gradleGit'
+    id 'net.nemerosa.versioning'
 }
 
 
@@ -487,3 +490,119 @@ task performanceJavadoc(type: Javadoc) {
     destinationDir = file("${buildDir}/docs/performance/javadoc")
 }
 
+
+
+// ========== Packaging and Publishing ==========
+tasks.named("versionDisplay") {
+    notCompatibleWithConfigurationCache("Accesses project at execution time")
+}
+versioning {
+    precision = 3
+    defaultNumber = 1
+
+    releaseBuild = false
+    releaseMode  = 'snapshot'
+    displayMode  = 'snapshot'
+    dirty        = { t -> t }
+}
+// gitProperties {
+//     // Expose properties to project.ext.gitProps map
+//     extProperty = 'gitProps'
+//     // Ensure properties are regenerated every build
+//     // outputs.upToDateWhen { false }
+// }
+// gitProperties {
+//     // gitPropertiesName = "git-info.properties"
+//     extProperty = 'gitProps'
+// }
+
+// gitProperties {
+//     extProperty = 'gitProps'
+//     // outputs.upToDateWhen { false }
+// }
+
+// Ensure properties are always regenerated
+// generateGitProperties.output.upToDateWhen { false }
+
+// task printGitProperties {
+//     dependsOn generateGitProperties
+//     // Capture project.ext before doLast for configuration cache compatibility
+//     def ext = project.ext
+//     doLast {
+//         println "git.branch=" + ext.gitProps['git.branch']
+//     }
+// }
+
+jar {
+    // dependsOn generateGitProperties
+
+    manifest {
+
+        // def ext = project.ext
+        // doLast {
+        //     println "git.branch=" + ext.gitProps['git.branch']
+        // }
+        attributes(
+            'Manifest-Version' : '0.1.0',
+            'Created-By'       : "Gradle ${gradle.gradleVersion}",
+            'license'          : "${project.POM_LICENSE_NAME}",
+            'license-url'      : "${project.POM_LICENSE_URL}",
+            // 'license2'         : project.POM_LICENSE_NAME,
+            'group'            :  "${project.GROUP}",
+            'artifactId'       : "${project.POM_ARTIFACT_ID}",
+            'Built-By'         : System.properties['user.name'],
+            'Build-Jdk'        : "Version: ${System.properties['java.version']} (Vendor: ${System.properties['java.vendor']} Version: ${System.properties['java.vm.version']})",
+            'Build-OS'         : "OS: ${System.properties['os.name']} Arch: ${System.properties['os.arch']} Version: ${System.properties['os.version']}",
+
+            // Versioning
+            'Implementation-Title' : project.name,
+            // 'Implementation-Version' : ,
+            // 'Implementation-Vendor' : ,
+            // 'Specification-Title' : ,
+            // 'Specification-Version' : ,
+            // Source control / versioning
+            // doLast {
+            // 'Git-Commit' : project.ext.gitProps[ 'git.commit.id.abbrev' ],
+            // 'Git-Commit': "${-> project.ext.gitProps['git.commit.id.abbrev']}",
+            // 'Git-Commit': "${-> ext.gitProps['git.commit.id.abbrev']}",
+            'SCM': versioning.info.scm,
+            'Git-Branch' : versioning.info.branch,
+            'Git-Branch-type' : versioning.info.branchType,
+            'Git-Branch-id' : versioning.info.branchId,
+            'Git-Commit' : versioning.info.commit,
+            'Git-build' : versioning.info.build,
+            'Git-full' : versioning.info.full,
+            'Git-base' : versioning.info.base,
+            // 'Git-gradle' : versioning.info.gradle,
+            'Git-Version-display': versioning.info.display,
+            // 'Git-tag' : findProperty( versioning.info.tag ) ?: 'undefined',
+            // 'Git-lastTag' : versioning.info.lastTag,
+            'Git-dirty' : versioning.info.dirty,
+            // 'Git-build' : versioning.info.build,
+            'Git-Version-major': versioning.info.versionNumber.major,
+            'Git-Version-minor': versioning.info.versionNumber.minor,
+            'Git-Version-patch': versioning.info.versionNumber.patch,
+            'Git-Version-qualifier': versioning.info.versionNumber.qualifier,
+            'Git-Version-code': versioning.info.versionNumber.versionCode,
+            // 'Git-Version-time': versioning.info.versionNumber.time,
+            // 'Git-Tag'    : project.ext.gitProps[ 'git.tags' ],
+            // }
+
+            'Build-Timestamp'  : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
+        )
+    }
+}
+
+// jar {
+//     manifest {
+//         attributes {
+//             // 'Built-By'       : System.properties['user.name'],
+//             'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+//             // 'Build-Revision' : versioning.info.commit,
+//             // 'Created-By'     : "Gradle ${gradle.gradleVersion}",
+//             // 'Build-Jdk'      : "Version: ${System.properties['java.version']} (Vendor: ${System.properties['java.vendor']} Version: ${System.properties['java.vm.version']})",
+//             // 'Build-OS'       : "OS: ${System.properties['os.name']} Arch: ${System.properties['os.arch']} Version: ${System.properties['os.version']}",
+//             // 'Implementation-Version' : getVersion()
+//         }
+//     }
+// }
