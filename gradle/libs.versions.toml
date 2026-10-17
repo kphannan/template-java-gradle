@@ -1,0 +1,103 @@
+
+## ====================================
+## ====================================
+## ----- Versions -----
+[versions]
+
+# ===== Annotation Processors =====
+
+#   --- JSepcify - tool neutral null checks
+jspecifyVersion     = '1.0.0'
+
+#   --- boilerplate methods
+lombokVersion       = '9.2.0'
+
+# ===== Static Analysis =====
+
+#   --- Coding practices (static analysis) ---
+
+#   --- Coding style
+checkstyleVersion   = '14.3.0'
+
+#   --- Commmon coding flaws ---
+pmdVersion          = '7.28.0'
+spotbugsVersion     = '6.5.11'   #'6.0.26'
+
+
+# ===== Dynamic Analysis =====
+
+#   --- Unit Testing ---
+# --- Unit Testing ---
+assertjVersion      = '4.0.0-M1'
+logcaptorVersion    = '2.10.2'
+
+
+#   --- Mutation Testing (pitest) ---
+pitPluginVersion    = '1.19.0-rc.3'
+pitVersion          = '1.22.1'
+
+# ===== Code format =====
+
+#   --- Spotless ---
+spotlessVersion     = '7.0.0.BETA4'
+#   --- OpenRewrite ---
+openRewriteVersion  = '7.44.0'
+
+
+
+## ====================================
+## ====================================
+## ----- Libraries -----
+[libraries]
+
+# spotbugs = { module = 'com.h3xstream.findsecbugs:findsecbugs-plugin', version.ref = 'spotbugsVersion' }
+
+# ----- Annotation Processor -----
+#   --- JSpecify (Stanard Annotations) ---
+jspecify = { module = 'org.jspecify:jspecify', version.ref = 'jspecifyVersion' }
+
+# --- Unit Testing ---
+assertj = { module = 'org.assertj:assertj-core', version.ref = 'assertjVersion' }
+logcaptor = { group = 'io.github.hakky54', name = 'logcaptor', version.ref = 'logcaptorVersion' }
+
+
+
+## ====================================
+## ====================================
+## ----- Bundles -----
+[bundles]
+
+unit-test = [ 'assertj', 'logcaptor' ]
+
+
+## ====================================
+## ====================================
+## ----- Plugins -----
+[plugins]
+
+# ----- Coding support -----
+#   --- boilerplate generation ---
+lombok = { id = 'io.freefair.lombok', version.ref = 'lombokVersion' }
+
+
+# ----- Static Analysis -----
+
+# --- Code Style ---
+checkstyle = { id = 'checkstyle' }
+# --- Common Defects ---
+pmd = { id = 'pmd' }
+spotbugs = { id = 'com.github.spotbugs', version.ref = 'spotbugsVersion' }
+
+# ----- Runtime Analysis -----
+# --- Code Coverage ---
+jacoco = { id = 'jacoco' }
+
+
+#   --- Mutation testing ---
+pitest = { id = 'info.solidsoft.pitest', version.ref = 'pitPluginVersion' }
+
+#   --- Spotless ---
+spotless = { id = 'com.diffplug.spotless', version.ref = 'spotlessVersion' }
+
+# --- OpenRewrite ---
+openRewrite = { id = 'org.openrewrite.rewrite', version.ref = 'openRewriteVersion' }
