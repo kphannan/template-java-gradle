@@ -94,6 +94,51 @@ testing {
             // Use JUnit Jupiter test framework
             useJUnitJupiter('6.0.1')
         }
+
+
+        bdd(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "BDD tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        integration(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Integration tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        functional(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Functional tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+
+        performance(JvmTestSuite) {
+            targets {
+                all {
+                    testTask.configure {
+                        description = "Performance tests which run after unit tests"
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -102,6 +147,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(26)
     }
+
+    withJavadocJar()
 }
 
 
@@ -143,13 +190,17 @@ pmd {
 }
 
 //   --- Spotbugs
+def spotBugsclassLoader = plugins['com.github.spotbugs'].class.classLoader
+def SpotBugsTask = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.SpotBugsTask' )
+def SpotBugsEffort = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.Effort' )
+def SpotBugsConfidence = spotBugsclassLoader.findLoadedClass( 'com.github.spotbugs.snom.Confidence' )
 spotbugs {
     // 1. Effort: 'max' uses more analysis time to find more bugs
-    effort = 'max'
+    effort = SpotBugsEffort.MAX
 
     // 2. Report Level: 'low' means "report even low-confidence bugs"
     // This is the key to "in-depth" reviews.
-    reportLevel = 'low'
+    reportLevel = SpotBugsConfidence.LOW
 
     showProgress = true
     showStackTraces = true
@@ -328,13 +379,15 @@ rewrite {
 
 
 // --- Spotless
+// https://github.com/diffplug/spotless/tree/main/plugin-gradle
 spotless {
+    // ignoreFailures = true
+    // enforceCheck = false
 
-    enforceCheck = false
+    // enforceCheck false
 
     java {
-        // TODO enable ratchet after first commit to origin/master
-        // ratchetFrom( "origin/master" )
+        ratchetFrom( "origin/master" )      // This can only be enabled once the repository exists at origin
         toggleOffOn()
 
         // https://choosealicense.com/licenses/agpl-3.0/
@@ -350,22 +403,87 @@ spotless {
 
         endWithNewline()
 
+        // cleanthat()
+        // tableTestFormatter()
+
         target fileTree( '.' ) {
             include '**/*.java'
             exclude '**/build/**'
+            exclude '**/generated/**'
         }
     }
+
+    // https://github.com/diffplug/spotless/tree/main/plugin-gradle#json
+    // json {
+    //     target 'src/**/*.json'                // you have to set the target manually
+    //     simple()                              // has its own section below
+    //     prettier().config(['parser': 'json']) // see Prettier section below
+    //     eclipseWtp('json')                    // see Eclipse web tools platform section
+    //     gson()                                // has its own section below
+    //     jackson()                             // has its own section below
+    //     biome()                               // has its own section below
+    //     jsonPatch([])                         // has its own section below
+    // }
+
+    // https://github.com/diffplug/spotless/tree/main/plugin-gradle#yaml
+    // yaml {
+    //     target 'src/**/*.yaml'                // you have to set the target manually
+    //     jackson()                             // has its own section below
+    //         .spaceBeforeSeparator(false)                   // optional: add a whitespace before key separator. False by default
+    //         .feature('INDENT_OUTPUT', true)                // optional: true by default
+    //         .feature('ORDER_MAP_ENTRIES_BY_KEYS', true)    // optional: false by default
+    //     prettier()                            // has its own section below
+    // }
+
+	format 'misc', {
+		target '.gitignore', '*.gradle', '*.md', '.ci/*.sh'
+		indentWithSpaces( 4 )
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+
 }
 
-// TODO add javadoc
-// TODO add packaging as jar
-// TODO add mutation testing - pitest
-// TODO add versioning
-// TODO add publishing
-// TODO add security scan with trivy
-// TODO add checker framework
-// TODO add test suite - performance (gatling)
-// TODO add test suite - smoke
-// TODO add test suite - BDD
-// TODO add test suite - functional
-// TODO add test suite - integration
+javadoc {
+    excludes = [ "**/*.javaX", "**/generated/**" ]
+    // failOnError = false
+    destinationDir = file("${buildDir}/docs/main/javadoc")
+}
+
+task testJavadoc(type: Javadoc) {
+    failOnError = false
+    source = sourceSets.test.allJava
+    classpath = sourceSets.test.compileClasspath
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/test/javadoc")
+}
+
+task bddJavadoc(type: Javadoc) {
+    source = sourceSets.bdd.allJava
+    classpath = sourceSets.bdd.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/bdd/javadoc")
+}
+
+task functionalJavadoc(type: Javadoc) {
+    source = sourceSets.functional.allJava
+    classpath = sourceSets.functional.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/functional/javadoc")
+}
+
+task integrationJavadoc(type: Javadoc) {
+    source = sourceSets.integration.allJava
+    classpath = sourceSets.integration.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/integration/javadoc")
+}
+
+task performanceJavadoc(type: Javadoc) {
+    source = sourceSets.performance.allJava
+    classpath = sourceSets.performance.compileClasspath
+    excludes = [ "**/generated/**" ]
+    destinationDir = file("${buildDir}/docs/performance/javadoc")
+}
+
