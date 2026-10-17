@@ -69,7 +69,6 @@ dependencies {
 
 
 clean {
-    // println "${rootDir}/build"
     delete '{.,app,lib,list,utilities,build-logic}/{build,bin,logs}'
 }
 
@@ -334,6 +333,7 @@ spotless {
     enforceCheck = false
 
     java {
+        // TODO enable ratchet after first commit to origin/master
         // ratchetFrom( "origin/master" )
         toggleOffOn()
 
@@ -357,3 +357,15 @@ spotless {
     }
 }
 
+// TODO add javadoc
+// TODO add packaging as jar
+// TODO add mutation testing - pitest
+// TODO add versioning
+// TODO add publishing
+// TODO add security scan with trivy
+// TODO add checker framework
+// TODO add test suite - performance (gatling)
+// TODO add test suite - smoke
+// TODO add test suite - BDD
+// TODO add test suite - functional
+// TODO add test suite - integration
