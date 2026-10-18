@@ -9,3 +9,12 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
+tasks.named( 'check') {
+    // dependsOn( testing.suites.named( 'integrationTest' ))
+    // dependsOn( testing.suites.named( 'bddTest' ))
+    dependsOn( testing.suites.named( 'pitest' ))
+}
+
+// tasks.named( 'publish' ) {
+//     dependsOn( 'check' )
+// }

@@ -27,8 +27,14 @@ plugins {
     id 'pmd'
     id 'com.github.spotbugs'
 
+    // --- Dynamic Analysis
     //   --- Coverage
     id 'jacoco'
+
+    // --- Mutation testing
+    id 'info.solidsoft.pitest'
+//    alias( libs.plugins.pitest )
+
 
     // ===== Artifact Publishing =====
     id 'maven-publish'
@@ -333,6 +339,12 @@ jacocoTestCoverageVerification {
     }
 }
 
+
+// --- Mutation testing
+pitest {
+    junit5PluginVersion = '1.2.3'
+    targetClasses = ["${basePackage}.*"]
+}
 
 // ---  OpenRewrite
 rewrite {

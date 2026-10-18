@@ -1,4 +1,9 @@
 
+buildscript {
+    ext {
+        basePackage   = 'org.example'
+    }
+}
 
 
 plugins {
@@ -12,6 +17,10 @@ plugins {
     alias( libs.plugins.pmd )
     alias( libs.plugins.jacoco )
     alias( libs.plugins.spotbugs )
+
+    // ===== Dynamic Analysis =====
+    //   --- Mutation testing
+    alias( libs.plugins.pitest ).apply( false )
 
     // ===== Formatting / Refactoriing =====
     alias( libs.plugins.openRewrite ).apply( false )
