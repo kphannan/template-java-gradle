@@ -17,4 +17,7 @@ plugins {
     alias( libs.plugins.openRewrite ).apply( false )
     alias( libs.plugins.spotless ).apply( false )
 
+    // ===== SCM =====
+    // alias( libs.plugins.gradleGit ).apply( false )       // TODO plugin is not found properly when declared this way.
+    id 'net.nemerosa.versioning' version '4.0.1'
 }

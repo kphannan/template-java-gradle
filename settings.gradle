@@ -19,6 +19,7 @@ pluginManagement {
     repositories {
         mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
         maven {
             url = uri("https://artifacts.codegenomeproject.org/maven")
             credentials {
@@ -26,7 +27,7 @@ pluginManagement {
                 password = providers.gradleProperty("codeGenomeToken").get()
             }
         }
-        gradlePluginPortal()
+
     }
     // Include 'plugins build' to define convention plugins.
     includeBuild('build-logic')
@@ -47,6 +48,7 @@ dependencyResolutionManagement {
     repositories {
         mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
         // maven {
         //     name = "reposiliteRepository"
         //     url = "http://127.0.0.1:8081/"
@@ -58,7 +60,6 @@ dependencyResolutionManagement {
                 password = providers.gradleProperty("codeGenomeToken").get()
             }
         }
-        gradlePluginPortal()
     }
 }
 
