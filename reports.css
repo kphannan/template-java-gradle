@@ -69,8 +69,8 @@
 /*#app-results .main .dynamic-analysis .unit-test .junit,*/
 /* #app-results .main .dynamic-analysis .unit-test .coverage, */
 #app-results .main .dynamic-analysis .db,
-#app-results .main .test-mutation,
-#app-results .main .test-mutation .pitest,
+/* #app-results .main .test-mutation, */
+/* #app-results .main .test-mutation .pitest, */
 /* #app-results .main .documentation, */
 #app-results .main .documentation .diagrams,
 /* #app-results .main .documentation .diagrams .architecture, */
