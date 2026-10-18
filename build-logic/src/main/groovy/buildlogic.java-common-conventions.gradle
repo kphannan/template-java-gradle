@@ -13,8 +13,7 @@ plugins {
 
     // --- Code formatting ---
     // alias( libs.plugins.spotless ).apply( false )
-    id 'com.diffplug.spotless' //, version.ref = 'spotlessVersion'
-    // id 'com.diffplug.gradle.spotless'
+    id 'com.diffplug.spotless'
     id 'org.openrewrite.rewrite'
 
 
@@ -67,7 +66,6 @@ dependencies {
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.10.5'
     // spotbugsPlugins 'com.github.spotbugs:spotbugs-annotations:4.10.5'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.7.4'
-
 }
 
 
