@@ -8,6 +8,8 @@ plugins {
     id 'eclipse'
     id 'visual-studio'
 
+    id 'test-report-aggregation'
+
     // Apply the java Plugin to add support for Java.
     id 'java'
 
@@ -33,7 +35,8 @@ plugins {
 
     // --- Mutation testing
     id 'info.solidsoft.pitest'
-//    alias( libs.plugins.pitest )
+    // alias( libs.plugins.pitest )
+    id 'info.solidsoft.pitest.aggregator'
 
 
     // ===== Artifact Publishing =====
@@ -84,6 +87,15 @@ tasks.withType(JavaCompile) {
     // options.deprecation = true;
     // options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation', '-Amapstruct.verbose=false']
     options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation' ]
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
+
+    withJavadocJar()
 }
 
 
@@ -149,16 +161,16 @@ testing {
     }
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
+
+reporting {
+    reports {
+        testAggregateTestReport(AggregateTestReport) {
+            testSuiteName = "Test"
+            // testType = TestSuiteType.UNIT_TEST
+            // testType = "UNIT_TEST"
+        }
     }
-
-    withJavadocJar()
 }
-
-
 // ========== Static Analysis ==========
 //   --- Checkstyle
 checkstyle {
@@ -342,8 +354,31 @@ jacocoTestCoverageVerification {
 
 // --- Mutation testing
 pitest {
-    junit5PluginVersion = '1.2.3'
+    mutators = [ 'ALL' ]
+
+    // testSourceSets = [sourceSets.test, sourceSets.integrationTest]
+    // mainSourceSets = [sourceSets.main, sourceSets.additionalMain]
+    // additionalMutableCodePaths =
     targetClasses = ["${basePackage}.*"]
+    // excludedClasses = [ '**.*App*', '**.mapper*Impl', '**.*Config' ]
+
+    // timestampedReports = false
+    // withHistory = false
+    verbose = false
+    failWhenNoMutations = false
+    threads = 16
+    exportLineCoverage = true
+    outputFormats = [ 'XML', 'HTML' ]
+    timestampedReports = false
+
+    junit5PluginVersion = '1.2.3'
+
+    reportAggregator {  //since 1.9.11 - extra results validation, if needed
+        //simpler Groovy syntax (testStrengthThreshold = 50) does not seem to be supported for nested properties
+        testStrengthThreshold = 50
+        mutationThreshold = 5
+        maxSurviving = 300
+    }
 }
 
 // ---  OpenRewrite
@@ -395,7 +430,7 @@ rewrite {
 // https://github.com/diffplug/spotless/tree/main/plugin-gradle
 spotless {
     // ignoreFailures = true
-    // enforceCheck = false
+    enforceCheck = false
 
     // enforceCheck false
 
@@ -524,45 +559,46 @@ jar {
     manifest {
 
         attributes(
-            'Manifest-Version' : '0.1.0',
-            'Created-By'       : "Gradle ${gradle.gradleVersion}",
-            'group'            :  "${project.GROUP}",
-            'artifactId'       : "${project.POM_ARTIFACT_ID}",
-            'Built-By'         : System.properties['user.name'],
-            'Build-Jdk'        : "Version: ${System.properties['java.version']} (Vendor: ${System.properties['java.vendor']} Version: ${System.properties['java.vm.version']})",
-            'Build-OS'         : "OS: ${System.properties['os.name']} Arch: ${System.properties['os.arch']} Version: ${System.properties['os.version']}",
+            'Manifest-Version'       : '0.1.0',
+            'Created-By'             : "Gradle ${gradle.gradleVersion}",
+            'group'                  :  "${project.GROUP}",
+            'artifactId'             : "${project.POM_ARTIFACT_ID}",
+            'Built-By'               : System.properties['user.name'],
+            'Build-Revision'         : versioning.info.commit,
+            'Build-Jdk'              : "Version: ${System.properties['java.version']} (Vendor: ${System.properties['java.vendor']} Version: ${System.properties['java.vm.version']})",
+            'Build-OS'               : "OS: ${System.properties['os.name']} Arch: ${System.properties['os.arch']} Version: ${System.properties['os.version']}",
 
             // Versioning
-            'Implementation-Title' : project.name,
+            'Implementation-Title'   : project.name,
             // 'Implementation-Version' : ,
-            // 'Implementation-Vendor' : ,
-            // 'Specification-Title' : ,
-            // 'Specification-Version' : ,
+            // 'Implementation-Vendor'  : ,
+            // 'Specification-Title'    : ,
+            // 'Specification-Version'  : ,
             // Source control / versioning
-            'SCM': versioning.info.scm,
-            'Git-Branch' : versioning.info.branch,              // raw branch name
-            'Git-Branch-type' : versioning.info.branchType,     // prefix of branch name (text before '/')
-            'Git-Branch-id' : versioning.info.branchId,         // flattened branch name
-            'Git-Commit' : versioning.info.commit,              // full commit-id
-            // 'Git-build' : versioning.info.build,                // short commit-id
-            // 'Git-full' : versioning.info.full,                  // full version with build(-snapshot)(-dirty)
-            // 'Git-base' : versioning.info.base,                  // branch name without type
-            // 'Git-gradle' : versioning.info.gradle,
-            'Git-Version-display': versioning.info.display,     // This is where we get the version number of the artifact
-            // 'Git-tag' : findProperty( versioning.info.tag ) ?: 'undefined',
-            // 'Git-lastTag' : versioning.info.lastTag,
-            'Git-dirty' : versioning.info.dirty,                // built from uncommited code
-            // 'Git-Version-major': versioning.info.versionNumber.major,
-            // 'Git-Version-minor': versioning.info.versionNumber.minor,
-            // 'Git-Version-patch': versioning.info.versionNumber.patch,
-            // 'Git-Version-qualifier': versioning.info.versionNumber.qualifier,
-            'Git-Version-code': versioning.info.versionNumber.versionCode,
-            // 'Git-Version-time': versioning.info.versionNumber.time,
+            'SCM'                    : versioning.info.scm,
+            'Git-Branch'             : versioning.info.branch,              // raw branch name
+            'Git-Branch-type'        : versioning.info.branchType,     // prefix of branch name (text before '/')
+            'Git-Branch-id'          : versioning.info.branchId,         // flattened branch name
+            'Git-Commit'             : versioning.info.commit,              // full commit-id
+            'Git-Version-display'    : versioning.info.display,     // This is where we get the version number of the artifact
+            'Git-dirty'              : versioning.info.dirty,                // built from uncommited code
+            'Git-Version-code'       : versioning.info.versionNumber.versionCode,
+            // 'Git-build'             : versioning.info.build,                // short commit-id
+            // 'Git-full'              : versioning.info.full,                  // full version with build(-snapshot)(-dirty)
+            // 'Git-base'              : versioning.info.base,                  // branch name without type
+            // 'Git-gradle'            : versioning.info.gradle,
+            // 'Git-tag'               : findProperty( versioning.info.tag ) ?: 'undefined',
+            // 'Git-lastTag'           : versioning.info.lastTag,
+            // 'Git-Version-major'     : versioning.info.versionNumber.major,
+            // 'Git-Version-minor'     : versioning.info.versionNumber.minor,
+            // 'Git-Version-patch'     : versioning.info.versionNumber.patch,
+            // 'Git-Version-qualifier' : versioning.info.versionNumber.qualifier,
+            // 'Git-Version-time'      : versioning.info.versionNumber.time,
 
-            'Build-Timestamp'  : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-            'license'          : "${project.POM_LICENSE_NAME}",
-            'license-url'      : "${project.POM_LICENSE_URL}"
-            // 'license2'         : project.POM_LICENSE_NAME,
+            'Build-Timestamp'        : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+            'license'                : "${project.POM_LICENSE_NAME}",
+            'license-url'            : "${project.POM_LICENSE_URL}"
+            // 'license2'              : project.POM_LICENSE_NAME,
         )
     }
 }
