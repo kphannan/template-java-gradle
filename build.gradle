@@ -1,9 +1,9 @@
 
-buildscript {
-    ext {
-        basePackage   = 'org.example'
-    }
-}
+// buildscript {
+//     ext {
+//         basePackage   = 'org.example'
+//     }
+// }
 
 
 plugins {
@@ -30,3 +30,6 @@ plugins {
     // alias( libs.plugins.gradleGit ).apply( false )       // TODO plugin is not found properly when declared this way.
     id 'net.nemerosa.versioning' version '4.0.1'
 }
+
+// buildscript.ext.basePackage   = 'org.example'
+ext.basePackage   = 'org.example'
