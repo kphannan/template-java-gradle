@@ -8,6 +8,8 @@ plugins {
     id 'eclipse'
     id 'visual-studio'
 
+    id 'test-report-aggregation'
+
     // Apply the java Plugin to add support for Java.
     id 'java'
 
@@ -33,7 +35,8 @@ plugins {
 
     // --- Mutation testing
     id 'info.solidsoft.pitest'
-//    alias( libs.plugins.pitest )
+    // alias( libs.plugins.pitest )
+    id 'info.solidsoft.pitest.aggregator'
 
 
     // ===== Artifact Publishing =====
@@ -84,6 +87,15 @@ tasks.withType(JavaCompile) {
     // options.deprecation = true;
     // options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation', '-Amapstruct.verbose=false']
     options.compilerArgs += [ '-Xlint:unchecked', '-Xlint:deprecation' ]
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
+
+    withJavadocJar()
 }
 
 
@@ -149,16 +161,16 @@ testing {
     }
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
+
+reporting {
+    reports {
+        testAggregateTestReport(AggregateTestReport) {
+            testSuiteName = "Test"
+            // testType = TestSuiteType.UNIT_TEST
+            // testType = "UNIT_TEST"
+        }
     }
-
-    withJavadocJar()
 }
-
-
 // ========== Static Analysis ==========
 //   --- Checkstyle
 checkstyle {
@@ -342,8 +354,31 @@ jacocoTestCoverageVerification {
 
 // --- Mutation testing
 pitest {
-    junit5PluginVersion = '1.2.3'
+    mutators = [ 'ALL' ]
+
+    // testSourceSets = [sourceSets.test, sourceSets.integrationTest]
+    // mainSourceSets = [sourceSets.main, sourceSets.additionalMain]
+    // additionalMutableCodePaths =
     targetClasses = ["${basePackage}.*"]
+    // excludedClasses = [ '**.*App*', '**.mapper*Impl', '**.*Config' ]
+
+    // timestampedReports = false
+    // withHistory = false
+    verbose = false
+    failWhenNoMutations = false
+    threads = 16
+    exportLineCoverage = true
+    outputFormats = [ 'XML', 'HTML' ]
+    timestampedReports = false
+
+    junit5PluginVersion = '1.2.3'
+
+    reportAggregator {  //since 1.9.11 - extra results validation, if needed
+        //simpler Groovy syntax (testStrengthThreshold = 50) does not seem to be supported for nested properties
+        testStrengthThreshold = 50
+        mutationThreshold = 5
+        maxSurviving = 300
+    }
 }
 
 // ---  OpenRewrite
@@ -395,7 +430,7 @@ rewrite {
 // https://github.com/diffplug/spotless/tree/main/plugin-gradle
 spotless {
     // ignoreFailures = true
-    // enforceCheck = false
+    enforceCheck = false
 
     // enforceCheck false
 
