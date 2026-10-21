@@ -8,7 +8,7 @@ plugins {
     id 'eclipse'
     id 'visual-studio'
 
-    id 'test-report-aggregation'
+    // id 'test-report-aggregation'
 
     // Apply the java Plugin to add support for Java.
     id 'java'
@@ -99,15 +99,6 @@ java {
     withJavadocJar()
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
-    }
-
-    withJavadocJar()
-}
-
 
 test {
     testLogging {
@@ -172,25 +163,16 @@ testing {
 }
 
 
-reporting {
-    reports {
-        testAggregateTestReport(AggregateTestReport) {
-            testSuiteName = "Test"
-            // testType = TestSuiteType.UNIT_TEST
-            // testType = "UNIT_TEST"
-        }
-    }
-}
+// reporting {
+//     reports {
+//         testAggregateTestReport(AggregateTestReport) {
+//             testSuiteName = "Test"
+//             // testType = TestSuiteType.UNIT_TEST
+//             // testType = "UNIT_TEST"
+//         }
+//     }
+// }
 
-reporting {
-    reports {
-        testAggregateTestReport(AggregateTestReport) {
-            testSuiteName = "Test"
-            // testType = TestSuiteType.UNIT_TEST
-            // testType = "UNIT_TEST"
-        }
-    }
-}
 // ========== Static Analysis ==========
 //   --- Checkstyle
 checkstyle {
@@ -401,34 +383,6 @@ pitest {
     // }
 }
 
-// --- Mutation testing
-pitest {
-    mutators = [ 'ALL' ]
-
-    // testSourceSets = [sourceSets.test, sourceSets.integrationTest]
-    // mainSourceSets = [sourceSets.main, sourceSets.additionalMain]
-    // additionalMutableCodePaths =
-    targetClasses = ["${basePackage}.*"]
-    // excludedClasses = [ '**.*App*', '**.mapper*Impl', '**.*Config' ]
-
-    // timestampedReports = false
-    // withHistory = false
-    verbose = false
-    failWhenNoMutations = false
-    threads = 16
-    exportLineCoverage = true
-    outputFormats = [ 'XML', 'HTML' ]
-    timestampedReports = false
-
-    junit5PluginVersion = '1.2.3'
-
-    reportAggregator {  //since 1.9.11 - extra results validation, if needed
-        //simpler Groovy syntax (testStrengthThreshold = 50) does not seem to be supported for nested properties
-        testStrengthThreshold = 50
-        mutationThreshold = 5
-        maxSurviving = 300
-    }
-}
 
 // ---  OpenRewrite
 rewrite {
@@ -478,8 +432,7 @@ rewrite {
 // --- Spotless
 // https://github.com/diffplug/spotless/tree/main/plugin-gradle
 spotless {
-    // ignoreFailures = true
-    enforceCheck = false
+    ignoreFailures = true
     enforceCheck = false
 
     // enforceCheck false

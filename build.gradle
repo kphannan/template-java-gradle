@@ -1,11 +1,4 @@
 
-// buildscript {
-//     ext {
-//         basePackage   = 'org.example'
-//     }
-// }
-
-
 plugins {
 
     // ===== Frameworks =====
@@ -31,5 +24,4 @@ plugins {
     id 'net.nemerosa.versioning' version '4.0.1'
 }
 
-// buildscript.ext.basePackage   = 'org.example'
 ext.basePackage   = 'org.example'
