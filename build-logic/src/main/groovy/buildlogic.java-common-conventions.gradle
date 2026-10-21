@@ -97,6 +97,7 @@ java {
     }
 
     withJavadocJar()
+    withSourcesJar()
 }
 
 
@@ -496,6 +497,10 @@ javadoc {
     excludes = [ "**/*.javaX", "**/generated/**" ]
     // failOnError = false
     destinationDir = file("${buildDir}/docs/main/javadoc")
+
+    if ( JavaVersion.current().isJava9Compatible() ) {
+        options.addBooleanOption( 'html5', true )
+    }
 }
 
 task testJavadoc(type: Javadoc) {
@@ -602,3 +607,55 @@ jar {
     }
 }
 
+
+publishing {
+    publications {
+        mavenJava( MavenPublication) {
+
+            groupId = project.GROUP
+            artifactId = project.name
+            version = versioning.info.display
+
+            from components.java
+
+            versionMapping {
+                usage( 'java-api' ) {
+                    fromResolutionOf( 'runtimeClasspath' )
+                }
+
+                usage( 'java-runtime' ) {
+                    fromResolutionResult()
+                }
+            }
+
+            pom {
+                licenses {
+                    license {
+                        name = "${project.POM_LICENSE_NAME}"
+                        url = "${project.POM_LICENSE_URL}"
+                    }
+                }
+
+                scm {
+                    connection = "${project.POM_SCM_CONNECTION}"
+                    developerConnection = "${project.POM_SCM_DEV_CONNECTION}"
+                    url = "${project.POM_URL}"
+                }
+            }
+
+        }
+    }
+
+    repositories {
+        maven {
+            name = "${project.ARTIFACT_REPOSITORY_NAME}"
+            url = uri( "${project.ARTIFACT_REPOSITORY_URI}" )
+            allowInsecureProtocol = true // Enables HTTP opt-in
+            // Not very secure, but
+            credentials {
+                username = "${project.ARTIFACT_REPOSITORY_USERNAME}"
+                password = "${project.ARTIFACT_REPOSITORY_PASSWORD}"
+            }
+        }
+    }
+}
