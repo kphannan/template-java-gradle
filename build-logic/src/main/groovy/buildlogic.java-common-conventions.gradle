@@ -432,10 +432,7 @@ rewrite {
 // --- Spotless
 // https://github.com/diffplug/spotless/tree/main/plugin-gradle
 spotless {
-    ignoreFailures = true
     enforceCheck = false
-
-    // enforceCheck false
 
     java {
         ratchetFrom( "origin/master" )      // This can only be enabled once the repository exists at origin
