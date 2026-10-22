@@ -602,3 +602,22 @@ jar {
     }
 }
 
+
+// task trivyScan {
+//     group = 'verification'
+//     description = 'Scans project artifacts for vulerabilities using Trivy'
+
+//     // Ensure the scan happens after the Jar/War is created
+//     dependsOn 'build'
+
+//     doLast {
+//         // Path to the artifacts (usually build/libs)
+//         def artifactPath = "${buildDir}/libs"
+
+//         // println "Scanning artifacts in ${artifactPath}..."
+
+//         exec {
+//             commandLine 'trivy', 'fs', '--exit-code', '1', '--severity', 'HIGH,CRITICAL', artifactPath
+//         }
+//     }
+// }
