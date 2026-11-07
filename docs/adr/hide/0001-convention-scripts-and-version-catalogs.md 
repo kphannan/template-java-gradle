@@ -1,0 +1,3 @@
+# ADR-001: Build Logic Architecture
+
+use Gradle Convention Plugins and a centralized Version Catalog for dependency management, serving both solo developers and enterprise consistency.

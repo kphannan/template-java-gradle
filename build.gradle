@@ -2,7 +2,6 @@
 plugins {
 
     // ===== Frameworks =====
-    //   --- boilerplate
     alias( libs.plugins.lombok ).apply( false )
 
     // ===== Static Analysis =====
@@ -12,15 +11,13 @@ plugins {
     alias( libs.plugins.spotbugs )
 
     // ===== Dynamic Analysis =====
-    //   --- Mutation testing
     alias( libs.plugins.pitest ).apply( false )
 
-    // ===== Formatting / Refactoriing =====
+    // ===== Formatting / Refactoring =====
     alias( libs.plugins.openRewrite ).apply( false )
     alias( libs.plugins.spotless ).apply( false )
 
     // ===== SCM =====
-    // alias( libs.plugins.gradleGit ).apply( false )       // TODO plugin is not found properly when declared this way.
     id 'net.nemerosa.versioning' version '4.0.1'
 }
 
