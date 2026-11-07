@@ -18,7 +18,7 @@ plugins {
     alias( libs.plugins.spotless ).apply( false )
 
     // ===== SCM =====
-    id 'net.nemerosa.versioning' version '4.0.1'
+    alias( libs.plugins.gradleGit )
 }
 
 ext.basePackage   = 'org.example'
