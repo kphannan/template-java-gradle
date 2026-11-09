@@ -26,3 +26,11 @@ This document provides definitions for key terms, classes, and concepts used wit
 - **StringUtils**: A facade class in the `utilities` module that simplifies access to `SplitUtils` and `JoinUtils`.
 - **SplitUtils**: Contains the internal logic for splitting strings into a `LinkedList`.
 - **JoinUtils**: Contains the internal logic for joining a `LinkedList` into a string.
+
+## Reporting & Visibility
+
+- **Report Dashboard**: The static `reports.html` page (styled by `reports.css`) that links from the repository to the per-module analysis and test reports generated under each module's `build/reports/` directory.
+- **Section**: A top-level dashboard panel for one codebase area (`app`, `lib`, `api`, `template`), rendered as `<section id="<name>-results">`. Sections do not map one-to-one to Gradle modules.
+- **Card**: A dashboard element (an `<li>` or panel such as `.static-analysis` or `.test-bdd`) representing one report type, nested inside a section.
+- **Visibility Policy**: `reports/visibility.yaml` — the single source of truth for which sections and cards are hidden, per ADR 0007. Every hidden entry must record a `reason`.
+- **Generated Block**: The marker-delimited region of `reports.css` (between the `visibility:generated` start/end comments) that the `generateReports` task rewrites from the Visibility Policy. It must not be hand-edited.
