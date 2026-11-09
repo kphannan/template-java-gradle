@@ -93,6 +93,11 @@
     assertj = { module = 'org.assertj:assertj-core', version.ref = 'assertjVersion' }
     logcaptor = { group = 'io.github.hakky54', name = 'logcaptor', version.ref = 'logcaptorVersion' }
 
+    # --- Mutation Testing (PIT) ---
+    # The plugin adds its default pitest core (1.22.x); these catalog pins take precedence.
+    pitest-core = { module = 'org.pitest:pitest-command-line', version.ref = 'pitVersion' }
+    pitest-junit5 = { module = 'org.pitest:pitest-junit5-plugin', version.ref = 'junit5PluginVersion' }
+
 
 
 ## ====================================
