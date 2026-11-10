@@ -44,7 +44,7 @@ Report visibility becomes declarative: a YAML policy file is the single source o
 truth, the visibility block of `reports.css` is generated from it, and a verification
 task keeps the policy, the CSS, and the dashboard HTML in agreement.
 
-### Policy File: `reports/visibility.yaml`
+### Policy File: `visibility.yaml`
 
 A new file at the repository root, next to `reports.html` / `reports.css`:
 
@@ -102,7 +102,7 @@ A Gradle task that rewrites the visibility block of `reports.css` from the polic
   `#<id>-results { display: none; /* reason */ }`; hidden cards are grouped into one
   `display: none;` rule per section, with a `/* reason: ... */` comment above each
   selector.
-- Inputs: `reports/visibility.yaml` and `reports.css`; output: `reports.css`. The task
+- Inputs: `visibility.yaml` and `reports.css`; output: `reports.css`. The task
   is up-to-date when the policy is unchanged, so it is cheap to run.
 
 The generated block replaces the entire hand-maintained catalog: duplicate lines, the
@@ -181,5 +181,3 @@ neither reaches project or application code.
 - **Out of scope:** generating the report *content* (the links and data inside the
   dashboard, e.g. emitting a card for a newly wired report) is a separate concern and
   is not addressed here; this ADR governs visibility only.
-
-
