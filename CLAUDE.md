@@ -7,6 +7,11 @@
 - **Run all tests**: `./gradlew test`
 - **Clean build**: `./gradlew clean`
 
+## Environment Requirements
+
+- **`GIT_CONFIG_NOSYSTEM`**: The `net.nemerosa.versioning` plugin resolves the project version during configuration, and the JGit it bundles forks `git` twice on the first repository open — a Configuration Cache problem that fails builds on Gradle ≥ 8.7 (upstream: [nemerosa/versioning#97](https://github.com/nemerosa/versioning/issues/97), open). Export `GIT_CONFIG_NOSYSTEM=true` in the Gradle daemon's environment and restart the daemon (`./gradlew --stop`). JGit then skips system gitconfig discovery (no forks); `~/.gitconfig` and the repository config are still read from disk, and versioning only reads local repository state, so behavior is unchanged.
+- **`org.gradle.configuration-cache-problems=warn`** in `gradle.properties` is a temporary safety net for environments without that variable. It masks real configuration-cache regressions, so remove it once the environment variable is standard.
+
 ## Code Style Guidelines
 
 ### Java
