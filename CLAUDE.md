@@ -19,6 +19,7 @@
 - **Naming Conventions**:
   - Classes: `PascalCase` (e.g., `MessageUtils`)
   - Methods/Variables: `camelCase` (e.g., `getMessage()`, `tokens`)
+  - Constants: `UPPER_SNAKE_CASE`
   - Packages: Lowercase, reverse domain name (e.g., `org.example.app`)
 - **Formatting**:
   - Follow standard Java conventions.
