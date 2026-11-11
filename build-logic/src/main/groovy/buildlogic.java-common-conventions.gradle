@@ -31,8 +31,6 @@ plugins {
 
     // --- Mutation testing
     id 'info.solidsoft.pitest'
-    // alias( libs.plugins.pitest )
-    // id 'info.solidsoft.pitest.aggregator'
 
 
     // ===== Artifact Publishing =====
@@ -361,29 +359,15 @@ jacocoTestCoverageVerification {
 pitest {
     mutators = [ 'ALL' ]
 
-    // testSourceSets = [sourceSets.test, sourceSets.integrationTest]
-    // mainSourceSets = [sourceSets.main, sourceSets.additionalMain]
-    // additionalMutableCodePaths =
     targetClasses = ["${basePackage}.*"]
-    // excludedClasses = [ '**.*App*', '**.mapper*Impl', '**.*Config' ]
+    excludedClasses = [ '**.*AppZZ*', '**.mapper*Impl', '**.*Config' ]
 
-    // timestampedReports = false
-    // withHistory = false
     verbosity = 'QUIET'
     failWhenNoMutations = false
     threads = 16
     exportLineCoverage = true
     outputFormats = [ 'XML', 'HTML' ]
     timestampedReports = false
-
-    // The JUnit 5 plugin is declared as an explicit catalog dependency (libs.pitest.junit5)
-
-    // reportAggregator {  //since 1.9.11 - extra results validation, if needed
-    //     //simpler Groovy syntax (testStrengthThreshold = 50) does not seem to be supported for nested properties
-    //     testStrengthThreshold = 50
-    //     mutationThreshold = 0
-    //     maxSurviving = 300
-    // }
 }
 
 // Run mutation testing as part of `check` (and therefore `build`).
@@ -668,21 +652,3 @@ publishing {
         }
     }
 }
-// task trivyScan {
-//     group = 'verification'
-//     description = 'Scans project artifacts for vulerabilities using Trivy'
-
-//     // Ensure the scan happens after the Jar/War is created
-//     dependsOn 'build'
-
-//     doLast {
-//         // Path to the artifacts (usually build/libs)
-//         def artifactPath = "${buildDir}/libs"
-
-//         // println "Scanning artifacts in ${artifactPath}..."
-
-//         exec {
-//             commandLine 'trivy', 'fs', '--exit-code', '1', '--severity', 'HIGH,CRITICAL', artifactPath
-//         }
-//     }
-// }
