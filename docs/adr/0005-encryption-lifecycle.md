@@ -16,7 +16,9 @@ We will implement the following encryption lifecycle:
 - **Key Storage:** Keys will be stored in a dedicated Key Management Service (KMS) or a secure Vault (e.g., HashiCorp Vault), never in source control.
 - **Key Rotation:** Automated rotation of keys every 90 days (or upon suspected compromise).
 - **Key Revocation:** Defined process for immediately revoking compromised keys.
-- **Implementation:** Use standard libraries (e.g., Node.js `crypto` module) rather than custom encryption implementations.
+- **Implementation:** Use standard, well-maintained crypto libraries rather than custom encryption implementations:
+  - **Java:** JCE (Java Cryptography Extension) for standard algorithms; BouncyCastle for algorithms or key formats not in the JDK.
+  - **JavaScript/TypeScript:** the Node.js `crypto` module for server-side code; the Web Crypto API for browser-side code.
 
 ## Consequences
 

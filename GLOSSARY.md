@@ -34,3 +34,8 @@ This document provides definitions for key terms, classes, and concepts used wit
 - **Card**: A dashboard element (an `<li>` or panel such as `.static-analysis` or `.test-bdd`) representing one report type, nested inside a section.
 - **Visibility Policy**: `reports/visibility.yaml` — the single source of truth for which sections and cards are hidden, per ADR 0007. Every hidden entry must record a `reason`.
 - **Generated Block**: The marker-delimited region of `reports.css` (between the `visibility:generated` start/end comments) that the `generateReports` task rewrites from the Visibility Policy. It must not be hand-edited.
+
+## Standards & Process
+
+- **Implementation Language**: The language an application or module is implemented in. `rail-base` supports two: **Java** and **JavaScript/TypeScript**. Every module declares one, and the standards ADRs are written as a language-neutral core with per-language application sections (ADR 0001).
+- **Vulnerability Risk Acceptance Record (VRAR)**: A formal, time-boxed record accepting the risk of a known Critical or High vulnerability that is not remediated in code (for example, because the affected dependency's maintainer has not yet released a fixed version). A VRAR records the vulnerability ID, affected component, severity, justification, free-text rationale, compensating controls, the accepting approver, and a 90-day review expiry. Required before merging a change that introduces or carries such a vulnerability, and before promoting an affected artifact; stored in `security/risk-acceptances.yaml` and mirrored into the CycloneDX SBOM (ADR 0006).
