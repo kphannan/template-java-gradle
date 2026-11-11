@@ -11,7 +11,6 @@ plugins {
     id 'java'
 
     // --- Code formatting ---
-    // alias( libs.plugins.spotless ).apply( false )
     id 'com.diffplug.spotless'
     id 'org.openrewrite.rewrite'
 
@@ -27,14 +26,11 @@ plugins {
     id 'com.github.spotbugs'
 
     // --- Dynamic Analysis
-    // --- Dynamic Analysis
     //   --- Coverage
     id 'jacoco'
 
     // --- Mutation testing
     id 'info.solidsoft.pitest'
-    // alias( libs.plugins.pitest )
-    // id 'info.solidsoft.pitest.aggregator'
 
 
     // ===== Artifact Publishing =====
@@ -73,6 +69,13 @@ dependencies {
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.10.5'
     // spotbugsPlugins 'com.github.spotbugs:spotbugs-annotations:4.10.5'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.7.4'
+
+    // ----- Dynamic Analysis -----
+    //   --- Mutation Testing (PIT) ---
+    // The plugin auto-adds its default pitest core (1.22.x); the catalog pins (pitVersion /
+    // junit5PluginVersion) win the version conflict and make the effective versions explicit.
+    add( 'pitest', libs.pitest.core )
+    add( 'pitest', libs.pitest.junit5 )
 }
 
 
@@ -356,29 +359,22 @@ jacocoTestCoverageVerification {
 pitest {
     mutators = [ 'ALL' ]
 
-    // testSourceSets = [sourceSets.test, sourceSets.integrationTest]
-    // mainSourceSets = [sourceSets.main, sourceSets.additionalMain]
-    // additionalMutableCodePaths =
     targetClasses = ["${basePackage}.*"]
-    // excludedClasses = [ '**.*App*', '**.mapper*Impl', '**.*Config' ]
+    excludedClasses = [ '**.*AppZZ*', '**.mapper*Impl', '**.*Config' ]
 
-    // timestampedReports = false
-    // withHistory = false
     verbosity = 'QUIET'
     failWhenNoMutations = false
     threads = 16
     exportLineCoverage = true
     outputFormats = [ 'XML', 'HTML' ]
     timestampedReports = false
+}
 
-    junit5PluginVersion = '1.2.3'
-
-    // reportAggregator {  //since 1.9.11 - extra results validation, if needed
-    //     //simpler Groovy syntax (testStrengthThreshold = 50) does not seem to be supported for nested properties
-    //     testStrengthThreshold = 50
-    //     mutationThreshold = 0
-    //     maxSurviving = 300
-    // }
+// Run mutation testing as part of `check` (and therefore `build`).
+// Non-blocking for now: no mutation thresholds are configured (failWhenNoMutations = false),
+// so modules with little or no test coverage still produce reports without failing the build.
+tasks.named( 'check' ) {
+    dependsOn( tasks.named( 'pitest' ) )
 }
 
 
@@ -483,7 +479,7 @@ spotless {
 
 	format 'misc', {
 		target '.gitignore', '*.gradle', '*.md', '.ci/*.sh'
-		indentWithSpaces( 4 )
+		leadingTabsToSpaces( 4 )
 		trimTrailingWhitespace()
 		endWithNewline()
 	}
@@ -656,21 +652,3 @@ publishing {
         }
     }
 }
-// task trivyScan {
-//     group = 'verification'
-//     description = 'Scans project artifacts for vulerabilities using Trivy'
-
-//     // Ensure the scan happens after the Jar/War is created
-//     dependsOn 'build'
-
-//     doLast {
-//         // Path to the artifacts (usually build/libs)
-//         def artifactPath = "${buildDir}/libs"
-
-//         // println "Scanning artifacts in ${artifactPath}..."
-
-//         exec {
-//             commandLine 'trivy', 'fs', '--exit-code', '1', '--severity', 'HIGH,CRITICAL', artifactPath
-//         }
-//     }
-// }

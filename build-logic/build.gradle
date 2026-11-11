@@ -3,12 +3,7 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
-tasks.named( 'check') {
-    // dependsOn( testing.suites.named( 'integrationTest' ))
-    // dependsOn( testing.suites.named( 'bddTest' ))
-    dependsOn( testing.suites.named( 'pitest' ))
-}
-
-// tasks.named( 'publish' ) {
-//     dependsOn( 'check' )
-// }
+// `check` runs the Groovy checks only. PIT mutation testing is a project-level analysis
+// task in the module builds (see buildlogic.java-common-conventions), not a testing suite,
+// so it cannot be wired in here. (A previous `testing.suites.named('pitest')` reference
+// here failed with "TestSuite with name 'pitest' not found".)
